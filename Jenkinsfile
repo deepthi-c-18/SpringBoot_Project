@@ -19,7 +19,9 @@ pipeline {
             steps {
                 echo 'Building Spring Boot App using Maven Wrapper...'
                 // Using the Maven wrapper included in the repository
-                bat 'mvnw.cmd clean package'
+                // Added chmod to ensure the script is executable
+                sh 'chmod +x mvnw'
+                sh './mvnw clean package'
             }
         }
 
@@ -27,10 +29,10 @@ pipeline {
             steps {
                 echo 'Building and starting containers using Docker Compose...'
                 // Stop any existing containers to avoid conflicts
-                bat "${DOCKER_COMPOSE_CMD} down"
+                sh "${DOCKER_COMPOSE_CMD} down"
                 
                 // Build the image and start up in detached mode
-                bat "${DOCKER_COMPOSE_CMD} up -d --build"
+                sh "${DOCKER_COMPOSE_CMD} up -d --build"
             }
         }
     }
