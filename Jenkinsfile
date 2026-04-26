@@ -15,15 +15,6 @@ pipeline {
             }
         }
 
-        stage('Build JAR File') {
-            steps {
-                echo 'Building Spring Boot App using Maven Wrapper...'
-                // Using the Maven wrapper included in the repository
-                // Added chmod to ensure the script is executable
-                sh 'chmod +x mvnw'
-                sh './mvnw clean package'
-            }
-        }
 
         stage('Deploy with Docker Compose') {
             steps {
