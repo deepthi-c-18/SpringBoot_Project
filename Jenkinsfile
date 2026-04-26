@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Setup any global variables here
-        DOCKER_COMPOSE_CMD = 'docker-compose'
+        DOCKER_COMPOSE_CMD = 'docker compose'
     }
 
     stages {
