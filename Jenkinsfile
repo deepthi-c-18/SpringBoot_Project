@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+
+    environment {
+        // Setup any global variables here
+        DOCKER_COMPOSE_CMD = 'docker-compose'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout code from Git repository (Configured in the Jenkins Job)
+                checkout scm
+                echo 'Source code checked out successfully.'
+            }
+        }
+
+        stage('Build JAR File') {
+            steps {
+                echo 'Building Spring Boot App using Maven Wrapper...'
+                // Using the Maven wrapper included in the repository
+                bat 'mvnw.cmd clean package'
+            }
+        }
+
+        stage('Deploy with Docker Compose') {
+            steps {
+                echo 'Building and starting containers using Docker Compose...'
+                // Stop any existing containers to avoid conflicts
+                bat "${DOCKER_COMPOSE_CMD} down"
+                
+                // Build the image and start up in detached mode
+                bat "${DOCKER_COMPOSE_CMD} up -d --build"
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline execution complete.'
+        }
+        success {
+            echo 'Success! The application should be accessible at http://localhost:8086'
+            echo 'The MySQL database is accessible on port 3306'
+        }
+        failure {
+            echo 'Pipeline failed. Please check the logs.'
+        }
+    }
+}
