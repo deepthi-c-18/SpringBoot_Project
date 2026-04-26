@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Setup any global variables here
-        DOCKER_COMPOSE_CMD = 'docker compose'
+        DOCKER_COMPOSE_CMD = './docker-compose'
     }
 
     stages {
@@ -15,6 +15,13 @@ pipeline {
             }
         }
 
+        stage('Install Docker Compose') {
+            steps {
+                echo 'Downloading docker-compose binary into the workspace...'
+                sh 'curl -sSL "https://github.com/docker/compose/releases/download/v2.24.6/docker-compose-$(uname -s)-$(uname -m)" -o docker-compose'
+                sh 'chmod +x docker-compose'
+            }
+        }
 
         stage('Deploy with Docker Compose') {
             steps {
